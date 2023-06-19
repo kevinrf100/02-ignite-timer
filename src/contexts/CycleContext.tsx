@@ -46,6 +46,7 @@ export function CyclesContextProvider({ children }: CycleContextProviderProps) {
           : cycle
       )
     );
+    setActiveCycleId(null);
   }
 
   function setSecondsPassed(seconds: number) {
