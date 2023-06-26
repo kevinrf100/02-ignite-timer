@@ -1,11 +1,16 @@
 {
-    "extends": "@rocketseat/eslint-config/react",
-    "rules": {
-        "prettier/prettier":[
-            "error",
-            {
-              "endOfline": "auto"
-            }
-          ]
-    }
+  "extends": [
+    "@rocketseat/eslint-config/react",
+    "eslint:recommended",
+    "plugin:@typescript-eslint/eslint-recommended",
+    "plugin:@typescript-eslint/recommended"
+  ],
+  "rules": {
+    "prettier/prettier": [
+      "error",
+      {
+        "endOfline": "auto"
+      }
+    ]
+  }
 }

@@ -1,8 +1,3 @@
-interface CyclesState {
-  cycles: Cycle[];
-  activeCycleId: string | null;
-}
-
 export interface Cycle {
   id: string;
   task: string;
@@ -12,16 +7,27 @@ export interface Cycle {
   finishedDate?: Date;
 }
 
+interface CyclesState {
+  cycles: Cycle[];
+  activeCycleId: string | null;
+}
+
+export enum ActionTypes {
+  ADD_NEW_CYCLE = "ADD_NEW_CYCLE",
+  INTERRUPT_CYCLE = "INTERRUPT_CYCLE",
+  MARK_CURRENT_TASK_COMPLETED = "MARK_CURRENT_TASK_COMPLETED",
+}
+
 export function cyclesReducer(state: CyclesState, action: any) {
   switch (action.type) {
-    case "ADD_NEW_CYCLE":
+    case ActionTypes.ADD_NEW_CYCLE:
       return {
         ...state,
         activeCycleId: action.payload.newCycle.id,
         cycles: [...state.cycles, action.payload.newCycle],
       };
 
-    case "INTERRUPT_CYCLE":
+    case ActionTypes.INTERRUPT_CYCLE:
       return {
         ...state,
         activeCycleId: null,
@@ -32,7 +38,7 @@ export function cyclesReducer(state: CyclesState, action: any) {
         ),
       };
 
-    case "MARK_CURRENT_TASK_COMPLETED":
+    case ActionTypes.MARK_CURRENT_TASK_COMPLETED:
       return {
         ...state,
         activeCycleId: null,
