@@ -1,3 +1,4 @@
+import { produce } from "immer";
 import { ActionTypes } from "./actions";
 
 export interface Cycle {
@@ -17,33 +18,40 @@ interface CyclesState {
 export function cyclesReducer(state: CyclesState, action: any) {
   switch (action.type) {
     case ActionTypes.ADD_NEW_CYCLE:
-      return {
-        ...state,
-        activeCycleId: action.payload.newCycle.id,
-        cycles: [...state.cycles, action.payload.newCycle],
-      };
+      return produce(state, (draft) => {
+        draft.activeCycleId = action.payload.newCycle.id;
+        draft.cycles.push(action.payload.newCycle);
+      });
 
-    case ActionTypes.INTERRUPT_CYCLE:
-      return {
-        ...state,
-        activeCycleId: null,
-        cycles: state.cycles.map((cycle) =>
-          cycle.id === state.activeCycleId
-            ? { ...cycle, interruptedDate: new Date() }
-            : cycle
-        ),
-      };
+    case ActionTypes.INTERRUPT_CYCLE: {
+      const currentCycleIndex = state.cycles.findIndex((cycle) => {
+        return cycle.id === state.activeCycleId;
+      });
 
-    case ActionTypes.MARK_CURRENT_TASK_COMPLETED:
-      return {
-        ...state,
-        activeCycleId: null,
-        cycles: state.cycles.map((cycle) =>
-          cycle.id === state.activeCycleId
-            ? { ...cycle, finishedDate: new Date() }
-            : cycle
-        ),
-      };
+      if (currentCycleIndex < 0) {
+        return state;
+      }
+
+      return produce(state, (draft) => {
+        draft.activeCycleId = null;
+        draft.cycles[currentCycleIndex].interruptedDate = new Date();
+      });
+    }
+
+    case ActionTypes.MARK_CURRENT_TASK_COMPLETED: {
+      const currentCycleIndex = state.cycles.findIndex((cycle) => {
+        return cycle.id === state.activeCycleId;
+      });
+
+      if (currentCycleIndex < 0) {
+        return state;
+      }
+
+      return produce(state, (draft) => {
+        draft.activeCycleId = null;
+        draft.cycles[currentCycleIndex].finishedDate = new Date();
+      });
+    }
 
     default:
       return state;
